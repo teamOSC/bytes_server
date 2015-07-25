@@ -13,3 +13,7 @@ class Outlets(Object):
 
 class OutletInfo(Object):
     pass
+
+
+class Order(Object):
+    pass

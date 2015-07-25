@@ -1,6 +1,7 @@
 from django.shortcuts import render, HttpResponse, render_to_response
 from models import *
 import json, requests, copy
+import random
 
 # Create your views here.
 
@@ -63,8 +64,10 @@ def getOutletInfo(request):
         outlet_id = request.GET.get('out_id')
         final_response = {}
         final_response['results'] = []
-        a = Outlets.Query.filter(outlet_id=outlet_id)
+        a = OutletInfo.Query.filter(outlet_id=outlet_id)
+        #print a
         for x in a:
+            #print x
             filler = {}
             filler['item_name'] = x.item_name
             filler['outlet_id'] = x.outlet_id
@@ -88,7 +91,7 @@ def getOutletInfo(request):
 
         return HttpResponse(json.dumps(final_response))
     except:
-        return HttpResponse(json.dumps({'success': 'False'}))
+        return HttpResponse(json.dumps({'success': 'something went wrong'}))
 
 
 def createOutletInfo(request):
@@ -113,3 +116,58 @@ def createForm(request):
 
 def createInfoForm(request):
     return render_to_response('create_info.html')
+
+
+def billing(request):
+
+    query = request.GET.get('q')
+    user_id = int(request.GET.get('user_id'))
+    username = request.GET.get('username')
+
+    data = query.split('|')
+
+    final_data = {}
+    for x in data:
+        filler = {}
+        requested_data = x.split(',')
+        a = OutletInfo.Query.get(outlet_id=requested_data[0], item_id=requested_data[1])
+        print a
+        b = Outlets.Query.get(outlet_id=requested_data[0])
+
+
+        try:
+            final_data[a.outlet_id]['cost'] += int(int(a.item_rate) * int(requested_data[2]))
+            final_data[a.outlet_id]['time'] += int(float(float(b.service_time)/5.0) * float(requested_data[2]))
+        except:
+            final_data[a.outlet_id] = {}
+            final_data[a.outlet_id]['name'] = b.name
+            final_data[a.outlet_id]['outlet_id'] = a.outlet_id
+            final_data[a.outlet_id]['cost'] = int(int(a.item_rate) * int(requested_data[2]))
+            final_data[a.outlet_id]['time'] = int(float(float(b.service_time)/5.0) * float(requested_data[2]))
+
+
+        filler['item_name'] = a.item_name
+        filler['outlet_id'] = a.outlet_id
+        filler['outlet_name'] = b.name
+        filler['item_id'] = a.item_id
+        filler['cost'] = str(int(a.item_rate) * int(requested_data[2]))
+        filler['time'] = str(int(float(b.service_time)/5.0) * int(requested_data[2]))
+        c = Order(item_name=a.item_name, outlet_id = a.outlet_id, outlet_name=b.name, item_id=a.item_id,
+                  cost=filler['cost'], time=filler['time'], name=username, user_id=user_id,
+                  order_number='GREPLR'+str(a.outlet_id)+str(a.outlet_id)+str(a.outlet_id)+str(username)+'2718'+str(user_id)+'x005F')
+        c.save()
+
+    response_data = []
+
+    for key in final_data:
+        response_data.append(copy.deepcopy(final_data[key]))
+
+
+
+    #print final_data
+
+    return HttpResponse(json.dumps(response_data))
+
+
+def dashboardAPI(request, outlet_id):
+    return HttpResponse('How about ... NO')
