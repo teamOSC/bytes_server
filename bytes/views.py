@@ -105,3 +105,11 @@ def createOutletInfo(request):
         return HttpResponse(json.dumps({'success': 'False'}))
 
     return HttpResponse(json.dumps({'success': 'True'}))
+
+
+def createForm(request):
+    return render_to_response('create_form.html')
+
+
+def createInfoForm(request):
+    return render_to_response('create_info.html')

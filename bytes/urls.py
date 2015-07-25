@@ -11,4 +11,6 @@ urlpatterns = patterns('',
     url(r'^outlets/fetch', 'bytes.views.getOutlets'),
     url(r'^outlets/info', 'bytes.views.getOutletInfo'),
     url(r'^outlets/create_info', 'bytes.views.createOutletInfo'),
+    url(r'^outlets/create/form', 'bytes.views.createForm'),
+    url(r'^outlets/create_info/form', 'bytes.views.createInfoForm'),
 )
