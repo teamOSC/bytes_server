@@ -6,5 +6,10 @@ from parse_rest.datatypes import Object
 from credentials import parse_credentials
 register(parse_credentials["application_id"], parse_credentials["rest_api_key"])
 
+
 class Outlets(Object):
+    pass
+
+
+class OutletInfo(Object):
     pass
