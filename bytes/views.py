@@ -53,9 +53,9 @@ def createOutlets(request):
         a = Outlets(name=name, service_time=service_time, cost_for_two=cft, outlet_id=outlet_id)
         a.save()
     except:
-        return HttpResponse(json.dumps({'success': 'False'}))
+        return HttpResponse(json.dumps({'success': 'shubhamAgain'}))
 
-    return HttpResponse(json.dumps({'success': 'True'}))
+    return HttpResponse(json.dumps({'success': 'shubham'}))
 
 
 def getOutletInfo(request):
