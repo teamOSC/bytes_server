@@ -14,4 +14,5 @@ urlpatterns = patterns('',
     url(r'^outlets/create/form/$', 'bytes.views.createForm'),
     url(r'^outlets/create_info/form/$', 'bytes.views.createInfoForm'),
     url(r'^outlets/billing/$', 'bytes.views.billing'),
+    url(r'^outlets/orders/(?P<outlet_id>[0-9]+)/$', 'bytes.views.dashboardAPI'),
 )

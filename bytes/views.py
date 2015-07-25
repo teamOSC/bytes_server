@@ -145,17 +145,13 @@ def billing(request):
             final_data[a.outlet_id]['cost'] = int(int(a.item_rate) * int(requested_data[2]))
             final_data[a.outlet_id]['time'] = int(float(float(b.service_time)/5.0) * float(requested_data[2]))
 
-
-        filler['item_name'] = a.item_name
-        filler['outlet_id'] = a.outlet_id
-        filler['outlet_name'] = b.name
-        filler['item_id'] = a.item_id
         filler['cost'] = str(int(a.item_rate) * int(requested_data[2]))
         filler['time'] = str(int(float(b.service_time)/5.0) * int(requested_data[2]))
         c = Order(item_name=a.item_name, outlet_id = a.outlet_id, outlet_name=b.name, item_id=a.item_id,
-                  cost=filler['cost'], time=filler['time'], name=username, user_id=user_id,
+                  cost=filler['cost'], time=filler['time'], qty=int(requested_data[2]), name=username, user_id=user_id,
                   order_number='GREPLR'+str(a.outlet_id)+str(a.outlet_id)+str(a.outlet_id)+str(username)+'2718'+str(user_id)+'x005F')
         c.save()
+        print c.qty
 
     response_data = []
 
@@ -163,11 +159,38 @@ def billing(request):
         response_data.append(copy.deepcopy(final_data[key]))
 
 
-
-    #print final_data
-
     return HttpResponse(json.dumps(response_data))
 
 
 def dashboardAPI(request, outlet_id):
-    return HttpResponse('How about ... NO')
+
+    # fetch data from parse it it exists for every user
+    x = Order.Query.filter(outlet_id=outlet_id)
+    final_data = {}
+
+    for data in x:
+        try:
+            final_data[data.user_id]['amount'] += int(data.cost)
+            filler = {}
+            filler['item'] = data.item_name
+            filler['quantity'] = data.qty
+            final_data[data.user_id]['order'].append(filler)
+        except:
+            final_data[data.user_id] = {}
+            final_data[data.user_id]['user_id'] = data.user_id
+            final_data[data.user_id]['username'] = data.name
+            final_data[data.user_id]['outlet_name'] = data.outlet_name
+            final_data[data.user_id]['order_id'] = data.order_number
+            final_data[data.user_id]['amount'] = int(data.cost)
+            final_data[data.user_id]['order'] = []
+            filler = {}
+            filler['item'] = data.item_name
+            filler['quantity'] = data.qty
+            final_data[data.user_id]['order'].append(copy.deepcopy(filler))
+
+    response_final = []
+
+    for key in final_data:
+        response_final.append(copy.deepcopy(final_data[key]))
+
+    return HttpResponse(json.dumps(response_final))
