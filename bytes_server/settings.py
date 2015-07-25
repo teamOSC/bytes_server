@@ -85,6 +85,17 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(PACKAGE_ROOT, "static"),
+]
+
+# List of finder classes that know how to find static files in
+# various locations.
+STATICFILES_FINDERS = [
+    "django.contrib.staticfiles.finders.FileSystemFinder",
+    "django.contrib.staticfiles.finders.AppDirectoriesFinder",
+]
+
 TEMPLATE_DIRS = [
     os.path.join(PACKAGE_ROOT, "templates"),
 ]

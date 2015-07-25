@@ -6,5 +6,7 @@ urlpatterns = patterns('',
     # url(r'^$', 'staypay.views.home', name='home'),
     # url(r'^blog/', include('blog.urls')),
 
-    url(r'^$', 'hotel.views.mainPage'),
+    url(r'^$', 'bytes.views.mainPage'),
+    url(r'^outlets/create', 'bytes.views.createOutlets'),
+    url(r'^outlets/fetch', 'bytes.views.getOutlets'),
 )
