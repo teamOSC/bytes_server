@@ -2,6 +2,7 @@ from django.shortcuts import render, HttpResponse, render_to_response
 from models import *
 import json, requests, copy
 import random
+from parse_rest.installation import Push
 
 # Create your views here.
 
@@ -194,3 +195,13 @@ def dashboardAPI(request, outlet_id):
         response_final.append(copy.deepcopy(final_data[key]))
 
     return HttpResponse(json.dumps(response_final))
+
+
+def notify(request):
+    restaurant = request.GET.get('restaurant')
+    msg = "True"
+    d = {}
+    d['alert'] = msg
+    d['type'] = 'push'
+    Push.message("Your order from "+ str(restaurant) + " is complete.", channels=[""])
+    return HttpResponse(json.dumps({'status': True}))
